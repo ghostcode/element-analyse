@@ -15,6 +15,7 @@ export const getThemeConfigObject = (config) => {
 
 export const updateDomHeadStyle = (id, styleContent) => {
   let styleTag = document.getElementById(id);
+  // 首先判读是否存在
   if (!styleTag) {
     styleTag = document.createElement('style');
     styleTag.setAttribute('id', id);

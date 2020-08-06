@@ -37,6 +37,7 @@ export default {
     applyStyle(res, time) {
       if (time < this.lastApply) return;
       this.updateDocs(() => {
+        // 动态添加修改后的样式到页面
         updateDomHeadStyle('chalk-style', res);
       });
       this.lastApply = time;
@@ -60,6 +61,7 @@ export default {
     onAction() {
       this.triggertProgressBar(true);
       const time = +new Date();
+      // 更新样式变量
       updateVars(this.userConfig)
         .then(res => {
           this.applyStyle(res, time);
