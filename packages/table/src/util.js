@@ -18,6 +18,7 @@ const isObject = function(obj) {
 };
 
 export const orderBy = function(array, sortKey, reverse, sortMethod, sortBy) {
+  // 原路返回数组
   if (!sortKey && !sortMethod && (!sortBy || Array.isArray(sortBy) && !sortBy.length)) {
     return array;
   }
@@ -26,7 +27,9 @@ export const orderBy = function(array, sortKey, reverse, sortMethod, sortBy) {
   } else {
     reverse = (reverse && reverse < 0) ? -1 : 1;
   }
+  // 有排序方法则不要获取 key
   const getKey = sortMethod ? null : function(value, index) {
+    // 没有 sort-method 则使用 sort-by
     if (sortBy) {
       if (!Array.isArray(sortBy)) {
         sortBy = [sortBy];
@@ -42,12 +45,16 @@ export const orderBy = function(array, sortKey, reverse, sortMethod, sortBy) {
     if (sortKey !== '$key') {
       if (isObject(value) && '$value' in value) value = value.$value;
     }
+    // 值为非对象则返回原来的值
     return [isObject(value) ? getValueByPath(value, sortKey) : value];
   };
+
   const compare = function(a, b) {
+    // 若传入 sort-method 方法则使用该方法比较
     if (sortMethod) {
       return sortMethod(a.value, b.value);
     }
+    // 若没有比较方法则比较大小
     for (let i = 0, len = a.key.length; i < len; i++) {
       if (a.key[i] < b.key[i]) {
         return -1;
@@ -64,7 +71,8 @@ export const orderBy = function(array, sortKey, reverse, sortMethod, sortBy) {
       index: index,
       key: getKey ? getKey(value, index) : null
     };
-  }).sort(function(a, b) {
+  }).sort(function(a, b) { // 实际还是使用了数组的 sort 方法
+    // 这里进行比较
     let order = compare(a, b);
     if (!order) {
       // make stable https://en.wikipedia.org/wiki/Sorting_algorithm#Stability
